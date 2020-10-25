@@ -1,6 +1,6 @@
 const { getAngle } = require('../dist/util')
 const { parseNumberList, parseTransform } = require('../dist/parsers')
-const { parsePoints } = require('../dist/processors')
+const { parsePoints, parseTransforms, squashTransforms } = require('../dist/processors')
 const { Transform, Vec2 } = require('planck-js')
 
 const chai = require('chai');
@@ -49,6 +49,13 @@ describe('processors', () => {
     describe('parsePoints', () => {
         it('should ignore unpaired values', () => {
             parsePoints('35,64 3.7,477,23', 'points').should.have.lengthOf(2);
+        })
+    })
+    describe('squashTransforms', () => {
+        it('should multiply transforms in right order', () => {
+            let a = squashTransforms(parseTransforms('translate(100, 100)rotate(-130)', 'transform'), 'transform')
+            let b = squashTransforms(parseTransforms('matrix(-0.64279 -0.76604 0.76604 -0.64279 100 100)', 'transform'), 'transform')
+            a.should.deep.be.almost(b)
         })
     })
 })
