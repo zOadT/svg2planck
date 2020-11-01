@@ -1,7 +1,8 @@
 const { getAngle } = require('../dist/util')
 const { parseNumberList, parseTransform } = require('../dist/parsers')
 const { parsePoints, parseTransforms, squashTransforms } = require('../dist/processors')
-const { Transform, Vec2 } = require('planck-js')
+const { convertCircle, convertRect } = require('../dist/converters')
+const { Transform, Vec2, Circle, Box } = require('planck-js')
 
 const chai = require('chai');
 const chaiAlmost = require('chai-almost');
@@ -58,4 +59,33 @@ describe('processors', () => {
             a.should.deep.be.almost(b)
         })
     })
+})
+
+describe('converters', () => {
+    describe('parseCircle', () => {
+        it('should apply transformations in right order', () => {
+            convertCircle({
+                $: {
+                    cx: 50,
+                    cy: 70,
+                    r: 50,
+                    transform: Transform(Vec2(38.3974, -43.3012), Math.PI / 6)
+                },
+            }, Transform(Vec2(40, 20), -130 * Math.PI / 180)).should.deep.be.almost(Circle(Vec2(42.402117222946615, -42.97640014295341), 50))
+        })
+    })
+    describe('parseRect', () => {
+        it('should apply correct rotation', () => {
+            convertRect({
+                $: {
+                    x: 10,
+                    y: -20,
+                    width: 50,
+                    height: 40,
+                    transform: Transform(Vec2(38.3974, -43.3012), Math.PI / 6)
+                },
+            }, Transform(Vec2(40, 20), -130 * Math.PI / 180)).should.deep.be.almost(Box(50, 40, Vec2(-23.929702822903984, -16.04891141108515), 260 * Math.PI / 180))
+        })
+    })
+    // TODO
 })
