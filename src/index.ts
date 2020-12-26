@@ -1,11 +1,16 @@
+export * as processors from "./processors"
+export * as parsers from "./parsers"
+export * as util from "./util"
+export * as converters from "./converters"
+
 import { parseStringPromise, processors, OptionsV2 } from 'xml2js'
 import { parseTransforms, squashTransforms, parsePoints, scale } from './processors'
 
-type Options = {
+export type Options = {
     meterPerPixelRatio?: number,
 } & Omit<Omit<Omit<OptionsV2, 'attrkey'>, 'explicitChildren'>, 'preserveChildrenOrder'>
 
-export default function svg2planck(svg: string, options: Options) {
+export function svg2planck(svg: string, options: Options) {
     return parseStringPromise(svg, {
         ...options,
         attrkey: '$',
