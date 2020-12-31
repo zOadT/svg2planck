@@ -18,7 +18,7 @@ import { World, Transform } from 'planck-js'
 
 export async function simpleConverter(svg: string, options: Options) {
   const rootNode = await svg2planck(svg, options)
-  return transformTree(rootNode.svg, World(), Transform.identity())
+  return transformTree(rootNode, World(), Transform.identity())
 }
 
 function transformTree(node: any, world: World, transform: Transform) {

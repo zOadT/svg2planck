@@ -1,16 +1,29 @@
 const { getAngle } = require('../dist/util')
+const { mat33ToTransform } = require('../dist/mat33')
 const { parseNumberList, parseTransform } = require('../dist/parsers')
 const { parsePoints, parseTransforms, squashTransforms } = require('../dist/processors')
 const { convertCircle, convertRect } = require('../dist/converters')
-const { Transform, Vec2, Circle, Box } = require('planck-js')
+const { Transform, Vec2, Vec3, Mat33, Circle, Box } = require('planck-js')
 
 const chai = require('chai');
 const chaiAlmost = require('chai-almost');
 
 chai.use(chaiAlmost(1e-4));
-chai.should()
+const should = chai.should()
 
 describe('util', () => {
+    describe('mat33ToTransform', () => {
+        it('should convert valid transforms', () => {
+            const A = new Mat33(
+                Vec3(-0.64279, -0.76604, 0),
+                Vec3(0.76604, -0.64279, 0),
+                Vec3(40, 20, 0)
+            )
+            let result = mat33ToTransform(A)
+            result.transform.should.deep.be.almost(Transform(Vec2(40, 20), -130 * Math.PI / 180))
+            should.not.exist(result.overhang)
+        })
+    })
     describe('getAngle', () => {
         it('should map whole circle', () => {
             const angles = Array(36).fill(0).map((_, i) => 10 * i).map(deg => deg * Math.PI / 180)
@@ -29,19 +42,19 @@ describe('parsers', () => {
 
     describe('parseTransform', () => {
         it('should parse translations', () => {
-            parseTransform('translate(35 74)').should.deep.be.equal([Transform(Vec2(35, 74), 0)])
+            mat33ToTransform(parseTransform('translate(35 74)')[0]).transform.should.deep.be.equal(Transform(Vec2(35, 74), 0))
         })
         it('second argument of translate should be optional', () => {
-            parseTransform('translate(22.5)').should.deep.be.equal([Transform(Vec2(22.5, 0), 0)])
+            mat33ToTransform(parseTransform('translate(22.5)')[0]).transform.should.deep.be.equal(Transform(Vec2(22.5, 0), 0))
         })
         it('should parse rotations', () => {
-            parseTransform('rotate(-130)').should.deep.be.almost([Transform(Vec2(), -130 * Math.PI / 180)])
+            mat33ToTransform(parseTransform('rotate(-130)')[0]).transform.should.deep.be.almost(Transform(Vec2(), -130 * Math.PI / 180))
         })
         it('should parse rotations with offset', () => {
-            parseTransform('rotate(30, 100, 50)').should.deep.be.almost([Transform(Vec2(38.3974, -43.3012), Math.PI / 6)])
+            mat33ToTransform(parseTransform('rotate(30, 100, 50)')[0]).transform.should.deep.be.almost(Transform(Vec2(38.3974, -43.3012), Math.PI / 6))
         })
         it('should parse matrices', () => {
-            parseTransform('matrix(-0.64279 -0.76604 0.76604 -0.64279 40 20)').should.deep.be.almost([Transform(Vec2(40, 20), -130 * Math.PI / 180)])
+            mat33ToTransform(parseTransform('matrix(-0.64279 -0.76604 0.76604 -0.64279 40 20)')[0]).transform.should.deep.be.almost(Transform(Vec2(40, 20), -130 * Math.PI / 180))
         })
     })
 })
