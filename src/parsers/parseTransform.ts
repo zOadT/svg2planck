@@ -32,11 +32,10 @@ export default function parseTransform(value: string): Mat33[] {
                 return parseRotationTransform(params)
             case 'scale':
                 return parseScale(params)
-            case 'screwX':
-                // TODO
-            case 'screwY':
-                // TODO
-                throw new Error(`Transform definiton '${name}' is not supported and gets ignored`)
+            case 'skewX':
+                return parseSkewX(params)
+            case 'skewY':
+                return parseSkewY(params)
             default:
                 throw new Error(errorMsg)
         }
@@ -93,6 +92,32 @@ export default function parseTransform(value: string): Mat33[] {
         return new Mat33(
             Vec3(params[0], 0, 0),
             Vec3(0, params[1] ?? params[0], 0),
+            Vec3(0, 0, 1)
+        )
+    }
+
+    function parseSkewX(params: number[]): Mat33 {
+        if(params.length !== 1) {
+            throw new Error(errorMsg)
+        }
+        const alpha = params[0] * Math.PI / 180
+
+        return new Mat33(
+            Vec3(1, 0, 0),
+            Vec3(Math.tan(alpha), 1, 0),
+            Vec3(0, 0, 1)
+        )
+    }
+
+    function parseSkewY(params: number[]): Mat33 {
+        if(params.length !== 1) {
+            throw new Error(errorMsg)
+        }
+        const alpha = params[0] * Math.PI / 180
+
+        return new Mat33(
+            Vec3(1, Math.tan(alpha), 0),
+            Vec3(0, 1, 0),
             Vec3(0, 0, 1)
         )
     }
