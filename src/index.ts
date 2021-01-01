@@ -10,6 +10,7 @@ import { wringOutMat33 } from './mat33'
 
 export type Options = {
     meterPerPixelRatio?: number,
+    scaleY?: number,
 } & Omit<Omit<Omit<Omit<OptionsV2, 'attrkey'>, 'explicitChildren'>, 'preserveChildrenOrder'>, 'explicitRoot'>
 
 export async function svg2planck(svg: string, options: Options) {
@@ -28,11 +29,12 @@ export async function svg2planck(svg: string, options: Options) {
         ]
     })
 
-    const s = options.meterPerPixelRatio
-    const A = s
+    const scale = options.meterPerPixelRatio ?? 1
+    const scaleY = options.scaleY ?? 1
+    const A = (scale !== 1 || scaleY !== 1)
       ? new Mat33(
-          Vec3(s, 0, 0),
-          Vec3(0, s, 0),
+          Vec3(scale, 0, 0),
+          Vec3(0, scale * scaleY, 0),
           Vec3(0, 0, 1)
         )
       : null
