@@ -52,17 +52,17 @@ export default function parsePath(value: string): Command[] {
             let letter = command[0] as Letter
             let parameters = parseNumberList(command.substr(1))
 
-            // edge case: 0 % 0 is NaN
-            if(expectedLengthParameters(letter) === 0 && parameters.length === 0) {
-                result.push({
-                    letter,
-                    parameters: []
-                })
-            }
-            
-            if(parameters.length % expectedLengthParameters(letter) !== 0) {
-                // keep path until this point
-                break
+            if(parameters.length === 0) {
+                if(expectedLengthParameters(letter) === 0) {
+                    result.push({
+                        letter,
+                        parameters: []
+                    })
+                    continue
+                } else {
+                    // this is an error
+                    break
+                }
             }
 
             while(parameters.length >= expectedLengthParameters(letter)) {
@@ -72,6 +72,11 @@ export default function parsePath(value: string): Command[] {
                 })
                 letter = getImplictNextLetter(letter)
                 parameters = parameters.slice(expectedLengthParameters(letter))
+            }
+
+            if(parameters.length !== 0) {
+                // keep path until this point
+                break
             }
         }
     } catch {

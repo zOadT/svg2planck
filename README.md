@@ -31,7 +31,7 @@ function transformTree(node: any, world: World, transform: Transform) {
       body.createFixture(<any>shape)
     }
   } else if(node.$$) {
-    if(node.$.transform) {
+    if(node.$?.transform) {
       transform = Transform.mul(transform, <Transform>node.$.transform)
     }
     for(let child of node.$$) {

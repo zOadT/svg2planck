@@ -78,9 +78,24 @@ describe('parsers', () => {
             ])
         })
         it('should keep path until error', () => {
-            parsePath('M 20,50 A 10 10 0 0 1 20 40 Q 4 L 34 64 Z').should.deep.be.equal([
+            parsePath('M 20,50 A 10 10 0 0 1 20 40 Q 1 2 3 4 5 L 34 64 Z').should.deep.be.equal([
                 { letter: 'M', parameters: [20, 50] },
                 { letter: 'A', parameters: [10, 10, 0, 0, 1, 20, 40] },
+                { letter: 'Q', parameters: [1, 2, 3, 4] }
+            ])
+        })
+        it('should treat command without parameters as error', () => {
+            parsePath('M 20,50 Q A 10 10 0 0 1 20 40').should.deep.be.equal([
+                { letter: 'M', parameters: [20, 50] },
+            ])
+        })
+        it('should still arse after Z appears', () => {
+            parsePath('M 10,50 t 30,0 Z Q -25,-25 40,50 z').should.deep.be.equal([
+                { letter: 'M', parameters: [10, 50] },
+                { letter: 't', parameters: [30, 0] },
+                { letter: 'Z', parameters: [] },
+                { letter: 'Q', parameters: [-25, -25, 40, 50] },
+                { letter: 'z', parameters: [] },
             ])
         })
     })
