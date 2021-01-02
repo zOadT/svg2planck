@@ -1,22 +1,25 @@
 import { Vec2 } from 'planck-js'
 import { Command } from './parsePath'
 
-export type PathSegment = {
+export type LineSegment = {
     type: 'Line',
     startingPoint: Vec2,
     endPoint: Vec2,
-} | {
+}
+export type CubicBezierCurveSegment = {
     type: 'CubicBezierCurve',
     startingPoint: Vec2,
     endPoint: Vec2,
     startControlPoint: Vec2,
     endControlPoint: Vec2,
-} | {
+}
+export type QuadraticBezierCurveSegment = {
     type: 'QuadraticBezierCurve',
     startingPoint: Vec2,
     endPoint: Vec2,
     controlPoint: Vec2,
-} | {
+}
+export type EllipticalArcCurveSegment = {
     type: 'EllipticalArcCurve',
     startingPoint: Vec2,
     rx: number,
@@ -26,6 +29,7 @@ export type PathSegment = {
     sweepFlag: 0 | 1,
     endPoint: Vec2,
 }
+export type PathSegment = LineSegment | CubicBezierCurveSegment | QuadraticBezierCurveSegment | EllipticalArcCurveSegment
 
 export default function interpretPath(commands: Command[]): PathSegment[] {
     let result = [] as PathSegment[]

@@ -3,6 +3,7 @@ export default function isShape(node: any) {
         'circle',
         'ellipse',
         'line',
+        'path',
         'polygon',
         'polyline',
         'rect'
