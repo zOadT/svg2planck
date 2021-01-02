@@ -5,7 +5,7 @@ import { isShape } from '../util'
 export default function wringOutMat33(node: any, overhang: Mat33 | null) {
   if(isShape(node)) {
     applyMat33ToShape(node, overhang)
-  } else {
+  } else if(node.$$) {
     if(node.$?.transform) {
         let transform = <Mat33>node.$.transform
         if(overhang) {

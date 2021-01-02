@@ -27,7 +27,7 @@ function transformTree(node: any, world: World, transform: Transform) {
       position: transform.p,
       angle: transform.q.getAngle()
     }).createFixture(<any>converters.convertShape(node))
-  } else {
+  } else if(node.$$) {
     if(node.$.transform) {
       transform = Transform.mul(transform, <Transform>node.$.transform)
     }
