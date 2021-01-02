@@ -23,10 +23,13 @@ export async function simpleConverter(svg: string, options: Options) {
 
 function transformTree(node: any, world: World, transform: Transform) {
   if(util.isShape(node)) {
-    world.createBody({
+    let body = world.createBody({
       position: transform.p,
       angle: transform.q.getAngle()
-    }).createFixture(<any>converters.convertShape(node))
+    })
+    for(let shape of converters.convertShape(node)) {
+      body.createFixture(<any>shape)
+    }
   } else if(node.$$) {
     if(node.$.transform) {
       transform = Transform.mul(transform, <Transform>node.$.transform)

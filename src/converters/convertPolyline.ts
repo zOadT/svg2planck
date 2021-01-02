@@ -1,6 +1,6 @@
 import { Chain, Transform, Vec2 } from 'planck-js';
 
-export default function(node: any, transform?: Transform): Chain {
+export default function(node: any, transform?: Transform): Chain[] {
     
     let points = (node.$?.points ?? []) as Vec2[]
 
@@ -8,5 +8,5 @@ export default function(node: any, transform?: Transform): Chain {
         .filter(a => a)
         .reduce(Transform.mul))
 
-    return Chain(points)
+    return [Chain(points)]
 }

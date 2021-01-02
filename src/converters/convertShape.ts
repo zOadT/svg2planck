@@ -5,7 +5,7 @@ import convertPolygon from './convertPolygon';
 import convertPolyline from './convertPolyline';
 import convertRect from './convertRect';
 
-export default function(node: any, transform?: Transform): Circle | Edge | Polygon | Chain | Box {
+export default function(node: any, transform?: Transform): (Circle | Edge | Polygon | Chain | Box)[] {
     switch(node['#name'].toLowerCase()) {
         case 'circle':
             return convertCircle(node, transform)

@@ -1,6 +1,6 @@
 import { Edge, Transform, Vec2 } from 'planck-js';
 
-export default function(node: any, transform?: Transform): Edge {
+export default function(node: any, transform?: Transform): Edge[] {
 
     let point1 = Vec2(node.$?.x1 ?? 0, node.$?.y1 ?? 0)
     let point2 = Vec2(node.$?.x2 ?? 0, node.$?.y2 ?? 0)
@@ -12,5 +12,5 @@ export default function(node: any, transform?: Transform): Edge {
         .filter(a => a)
         .reduce(Transform.mul)
 
-    return Edge(point1, point2)
+    return [Edge(point1, point2)]
 }

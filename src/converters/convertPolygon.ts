@@ -1,6 +1,6 @@
 import { Polygon, Transform, Vec2 } from 'planck-js';
 
-export default function(node: any, transform?: Transform): Polygon {
+export default function(node: any, transform?: Transform): Polygon[] {
 
     let points = (node.$?.points ?? []) as Vec2[]
 
@@ -8,5 +8,5 @@ export default function(node: any, transform?: Transform): Polygon {
         .filter(a => a)
         .reduce(Transform.mul))
 
-    return Polygon(points)
+    return [Polygon(points)]
 }

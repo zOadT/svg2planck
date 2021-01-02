@@ -111,7 +111,7 @@ describe('converters', () => {
                     r: 50,
                     transform: Transform(Vec2(38.3974, -43.3012), Math.PI / 6)
                 },
-            }, Transform(Vec2(40, 20), -130 * Math.PI / 180)).should.deep.be.almost(Circle(Vec2(42.402117222946615, -42.97640014295341), 50))
+            }, Transform(Vec2(40, 20), -130 * Math.PI / 180)).should.deep.be.almost([Circle(Vec2(42.402117222946615, -42.97640014295341), 50)])
         })
     })
     describe('parseRect', () => {
@@ -124,7 +124,7 @@ describe('converters', () => {
                     height: 40,
                     transform: Transform(Vec2(38.3974, -43.3012), Math.PI / 6)
                 },
-            }, Transform(Vec2(40, 20), -130 * Math.PI / 180)).should.deep.be.almost(Box(50, 40, Vec2(-23.929702822903984, -16.04891141108515), 260 * Math.PI / 180))
+            }, Transform(Vec2(40, 20), -130 * Math.PI / 180)).should.deep.be.almost([Box(50, 40, Vec2(-23.929702822903984, -16.04891141108515), 260 * Math.PI / 180)])
         })
     })
     // TODO

@@ -1,7 +1,7 @@
 import { Box, Transform, Vec2 } from 'planck-js';
 import { getAngle } from '../util';
 
-export default function (node: any, transform?: Transform): Box {
+export default function (node: any, transform?: Transform): Box[] {
 
     let center = Vec2(
         (node.$.x ?? 0) + node.$.width / 2,
@@ -18,5 +18,5 @@ export default function (node: any, transform?: Transform): Box {
         Math.asin(transformProduct.q.s)
     )
 
-    return Box(node.$.width, node.$.height, center, angle)
+    return [Box(node.$.width, node.$.height, center, angle)]
 }
