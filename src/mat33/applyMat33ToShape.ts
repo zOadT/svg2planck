@@ -1,5 +1,6 @@
 import { Mat33, Vec2, Vec3, Transform } from 'planck-js'
 import { mat33mul, mat33ToTransform } from '.'
+import { PathSegment } from '../parsers/interpretPath'
 
 const EPSILON = 1e-3
 
@@ -29,8 +30,7 @@ export default function applyMat33ToShape(node: any, A: Mat33 | null) {
         case 'polyline':
             if(node.$.points) {
                 node.$.points = node.$.points.map((point: Vec2) => {
-                    const p = Mat33.mulVec3(overhang, Vec3(point.x, point.y, 1))
-                    return Vec2(p.x, p.y)
+                    return matt33mulVec2(overhang, point)
                 });
             }
             break
@@ -45,6 +45,10 @@ export default function applyMat33ToShape(node: any, A: Mat33 | null) {
         
         case 'line':
             applyMat33ToLine(node, overhang)
+            break
+        
+        case 'path':
+            applyMat33ToPath(node, overhang)
             break
         
         default:
@@ -66,6 +70,11 @@ function rect2polygon(node: any) {
         Vec2(cx - hx, cy + hy),
         Vec2(cx - hx, cy - hy)
     ]
+}
+
+function matt33mulVec2(A: Mat33, point: Vec2) {
+    const p = Mat33.mulVec3(A, Vec3(point.x, point.y, 1))
+    return Vec2(p.x, p.y)
 }
 
 function circle2ellipse(node: any) {
@@ -114,4 +123,28 @@ function applyMat33ToLine(node: any, A: Mat33) {
     node.$.y1 = point1.y
     node.$.x2 = point2.x
     node.$.y2 = point2.y
+}
+
+function applyMat33ToPath(node: any, A: Mat33) {
+    if(!node.$.d) {
+        return
+    }
+    for(let segment of node.$.d as PathSegment[]) {
+        segment.startingPoint = matt33mulVec2(A, segment.startingPoint)
+        segment.endPoint = matt33mulVec2(A, segment.endPoint)
+        
+        switch(segment.type) {
+            case 'CubicBezierCurve':
+                segment.startControlPoint = matt33mulVec2(A, segment.startControlPoint)
+                segment.endControlPoint = matt33mulVec2(A, segment.endControlPoint)
+                break
+            case 'QuadraticBezierCurve':
+                segment.controlPoint = matt33mulVec2(A, segment.controlPoint)
+                break
+            case 'EllipticalArcCurve':
+                // TODO
+                console.warn('Elliptical arc curves are not supported')
+                break
+        }
+    }
 }
