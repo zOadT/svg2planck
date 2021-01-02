@@ -5,7 +5,7 @@ export * as converters from './converters'
 
 import { Mat33, Vec3 } from 'planck-js'
 import { parseStringPromise, processors, OptionsV2 } from 'xml2js'
-import { parseTransforms, squashTransforms, parsePoints } from './processors'
+import { parseTransforms, squashTransforms, parsePoints, parsePaths, interpretPaths } from './processors'
 import { wringOutMat33 } from './mat33'
 
 export type Options = {
@@ -24,6 +24,8 @@ export async function svg2planck(svg: string, options: Options) {
             parseTransforms,
             <any>squashTransforms,
             parsePoints,
+            parsePaths,
+            interpretPaths,
             processors.parseNumbers,
             ...(options.attrNameProcessors ?? [])
         ]

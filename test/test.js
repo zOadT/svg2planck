@@ -1,6 +1,6 @@
 const { getAngle } = require('../dist/util')
 const { mat33ToTransform } = require('../dist/mat33')
-const { parseNumberList, parseTransform } = require('../dist/parsers')
+const { parseNumberList, parseTransform, parsePath } = require('../dist/parsers')
 const { parsePoints, parseTransforms, squashTransforms } = require('../dist/processors')
 const { convertCircle, convertRect } = require('../dist/converters')
 const { Transform, Vec2, Vec3, Mat33, Circle, Box } = require('planck-js')
@@ -55,6 +55,33 @@ describe('parsers', () => {
         })
         it('should parse matrices', () => {
             mat33ToTransform(parseTransform('matrix(-0.64279 -0.76604 0.76604 -0.64279 40 20)')[0]).transform.should.deep.be.almost(Transform(Vec2(40, 20), -130 * Math.PI / 180))
+        })
+    })
+
+    describe('parsePaths', () => {
+        it('should parse basic paths', () => {
+            parsePath('M 20,-35 Q 64 73.6 -6 4 z').should.deep.be.equal([
+                { letter: 'M', parameters: [20, -35] },
+                { letter: 'Q', parameters: [64, 73.6, -6, 4] },
+                { letter: 'z', parameters: []},
+            ])
+        })
+        it('should expand implict commands', () => {
+            parsePath('M 1 1 2 4 3 9 4 16 q 1 2 3 4 10 20 30 40 100 200 300 400').should.deep.be.equal([
+                { letter: 'M', parameters: [1, 1] },
+                { letter: 'L', parameters: [2, 4] },
+                { letter: 'L', parameters: [3, 9] },
+                { letter: 'L', parameters: [4, 16] },
+                { letter: 'q', parameters: [1, 2, 3, 4] },
+                { letter: 'q', parameters: [10, 20, 30, 40] },
+                { letter: 'q', parameters: [100, 200, 300, 400] },
+            ])
+        })
+        it('should keep path until error', () => {
+            parsePath('M 20,50 A 10 10 0 0 1 20 40 Q 4 L 34 64 Z').should.deep.be.equal([
+                { letter: 'M', parameters: [20, 50] },
+                { letter: 'A', parameters: [10, 10, 0, 0, 1, 20, 40] },
+            ])
         })
     })
 })
