@@ -1,6 +1,7 @@
 import { Mat33, Vec2, Vec3, Transform } from 'planck-js'
 import { mat33mul, mat33ToTransform } from '.'
 import { PathSegment } from '../parsers/interpretPath'
+import { getAngle } from '../util'
 
 const EPSILON = 1e-3
 
@@ -103,7 +104,10 @@ function applyMat33ToEllipse(node: any, A: Mat33) {
     const verticeB = p(t_0 + Math.PI / 2)
     node.$.ry = Math.hypot(verticeB.x, verticeB.y)
     
-    node.$.transform = Transform.mul(node.$.transform, Transform(Vec2(center.x, center.y), t_0))
+    const length = Math.hypot(verticeA.x, verticeA.y)
+    const alpha = length !== 0 ? getAngle(Math.acos(verticeA.x / length), Math.asin(verticeA.y / length)) : 0
+    
+    node.$.transform = Transform.mul(node.$.transform, Transform(Vec2(center.x, center.y), alpha))
     node.$.cx = 0
     node.$.cy = 0
 }

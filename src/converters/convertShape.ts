@@ -1,5 +1,6 @@
 import { Box, Chain, Circle, Edge, Polygon, Transform } from 'planck-js';
 import convertCircle from './convertCircle';
+import convertEllipse from './convertEllipse';
 import convertLine from './convertLine';
 import convertPath from './convertPath';
 import convertPolygon from './convertPolygon';
@@ -11,7 +12,7 @@ export default function(node: any, transform?: Transform): (Circle | Edge | Poly
         case 'circle':
             return convertCircle(node, transform)
         case 'ellipse':
-            throw new Error('planck-js does not support ellipses')
+            return convertEllipse(node, transform)
         case 'line':
             return convertLine(node, transform)
         case 'path':
