@@ -15,7 +15,7 @@ export default function mat33ToTransform(A: Mat33): { transform: Transform, over
     } = A
 
     const det = a * d - b * c
-    if(Math.abs(det) < EPSILON) {
+    if(Math.abs(det) === 0) {
         throw new Error('Invalid transforma because the matrix does not have full rank')
     }
 
