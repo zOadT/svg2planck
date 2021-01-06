@@ -11,7 +11,14 @@
     <div id="drop_zone">
         <!-- <p>Drag one or more files to this Drop Zone ...</p> -->
         <h1>Select a SVG file</h1>
-        <input type="file" id="input" accept=".svg">
+        <p>
+            <label>Scaling factor (typically between 0.01 and 1)</label><br>
+            <input type="number" id="scale" placeholder="0.1" step="0.01">
+        </p>
+        <p>
+            <label>SVG File to be converted to a planck world</label><br>
+            <input type="file" id="input" accept=".svg">
+        </p>
     </div>
     <script src="./pages/bundle.js"></script>
 </body>

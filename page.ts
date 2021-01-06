@@ -1,11 +1,6 @@
 import * as planck from 'planck-js'
 import { svg2planck, Options, util, converters } from './dist'
 
-async function simpleConverter(svg: string, options: Options) {
-  const rootNode = await svg2planck(svg, options)
-  return transformTree(rootNode, planck.World(), planck.Transform.identity())
-}
-
 function transformTree(node: any, world: planck.World, transform: planck.Transform) {
   if(util.isShape(node)) {
     let body = world.createBody({
@@ -55,14 +50,26 @@ function dropHandler(ev: DragEvent) {
 
 async function buildWorld(svg: string) {
 
-  let world = await simpleConverter(svg, {
-    meterPerPixelRatio: 0.02,
+  const meterPerPixelRatio = parseFloat((<any>document.getElementById('scale')).value) || 0.1
+  console.log(`scale: ${meterPerPixelRatio}`)
+  const rootNode = await svg2planck(svg, {
+    meterPerPixelRatio,
     scaleY: 1
-  });
+  })
+  const world = transformTree(rootNode, planck.World(), planck.Transform.identity());
+
+  const viewBox = rootNode.$.viewBox.match(/[\+\-]?\d+(?:\.\d+)?/g)?.map(parseFloat)
   
   // ok for a quick demo
-  (<any>window).planck.testbed('svg2planck', (testbed: any) => {
+  ;(<any>window).planck.testbed('svg2planck', (testbed: any) => {
     testbed.scaleY=1
+
+    if(viewBox && viewBox.length === 4) {
+      testbed.x = (viewBox[0] + viewBox[2] / 2) * meterPerPixelRatio
+      testbed.y = (viewBox[1] + viewBox[3] / 2) * meterPerPixelRatio
+      testbed.width = viewBox[2] * meterPerPixelRatio
+      testbed.heidth = viewBox[3] * meterPerPixelRatio
+    }
     return world
   })
 }
