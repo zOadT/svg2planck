@@ -38,6 +38,9 @@ describe('parsers', () => {
         it('should split at \'-\' sign', () => {
             parseNumberList('36-7').should.deep.be.equal([36, -7])
         })
+        it('should parse x.y.z syntax', () => {
+            parseNumberList('-1.7 0-10.6.4-10.5 8.3 0').should.deep.be.equal([-1.7, 0, -10.6, 0.4, -10.5, 8.3, 0])
+        })
     })
 
     describe('parseTransform', () => {

@@ -1,5 +1,6 @@
 export default function parseNumberList(value: string): number[] {
-    let result = value.match(/[\+\-]?\d+(?:\.\d+)?/g)?.map(parseFloat)
+    // TODO validation (we currently accept invalid number lists)
+    let result = value.match(/[\+\-]?\d*[\d\.](?:\d+)?/g)?.map(parseFloat)
     if(result === undefined) {
         return []
     }

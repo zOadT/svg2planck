@@ -178,7 +178,7 @@ function getAbsoluteLineEndPoint(command: Command, currentPoint: Vec2): Vec2 {
     switch(command.letter) {
         case 'L':
         case 'l':
-            point = Vec2(command.parameters[0], command.parameters[0])
+            point = Vec2(command.parameters[0], command.parameters[1])
             break
         case 'H':
             point = Vec2(command.parameters[0], currentPoint.y)
