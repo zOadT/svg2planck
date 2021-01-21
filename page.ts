@@ -1,5 +1,19 @@
 import * as planck from 'planck-js'
 import { svg2planck, Options, util, converters } from './dist'
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+
+const editorContainer = document.getElementById('editor')!
+const editor = monaco.editor.create(editorContainer, {
+  value: '<placeholder />',
+  language: 'xml',
+  theme: 'vs-dark',
+})
+window.addEventListener('resize', function updateLayout() {
+	editor.layout({
+		width: editorContainer.clientWidth,
+		height: editorContainer.clientHeight,
+	})
+})
 
 function transformTree(node: any, world: planck.World, transform: planck.Transform) {
   if(util.isShape(node)) {
@@ -35,6 +49,7 @@ function openSVG(file: File | undefined) {
     if(!event?.target?.result) {
       return
     }
+    editor.setValue(<string>event.target.result)
     buildWorld(<string>event.target.result)
   }
   reader.readAsBinaryString(file)

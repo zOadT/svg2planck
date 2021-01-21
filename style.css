@@ -1,0 +1,33 @@
+body {
+	display: grid;
+
+	grid-template-rows: 50px 1fr;
+	grid-template-columns: 1fr 1fr;
+	grid-template-areas:
+		"t v"
+		"e v";
+
+	height: 100vh;
+	margin: 0;
+	overflow: hidden;
+}
+#view {
+	grid-area: v;
+
+	width: 100%;
+	height: 100%;
+
+	background: #222222;
+	border: none;
+}
+#editor {
+	grid-area: e;
+
+	/* background: #1e1e1e; */
+	/* important for resizing; */
+	overflow: hidden;
+}
+
+#toolbar {
+	grid-area: t;
+}

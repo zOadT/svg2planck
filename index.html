@@ -5,21 +5,18 @@
 	<meta charset='utf-8' />
     <meta name='viewport' content='user-scalable=no' />
     
+    <link rel="stylesheet" href="./style.css" />
     <script src="https://cdn.jsdelivr.net/npm/planck-js@latest/dist/planck-with-testbed.js"></script>
 </head>
 <body>
-    <div id="drop_zone">
-        <!-- <p>Drag one or more files to this Drop Zone ...</p> -->
-        <h1>Select a SVG file</h1>
-        <p>
-            <label>Scaling factor (typically between 0.01 and 1)</label><br>
-            <input type="number" id="scale" placeholder="0.1" step="0.01">
-        </p>
-        <p>
-            <label>SVG File to be converted to a planck world</label><br>
-            <input type="file" id="input" accept=".svg">
-        </p>
+    <div id="toolbar">
+        <input type="file" id="input" accept=".svg">
+        <input type="number" id="scale" placeholder="0.1" step="0.01">
+        <label>Scaling factor (typically between 0.01 and 1)</label><br>
     </div>
+    <div id="editor"></div>
+    <iframe id="view"></iframe>
+
     <script src="./pages/bundle.js"></script>
 </body>
 </html>
