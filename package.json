@@ -21,6 +21,7 @@
     "buffer": "^6.0.3",
     "chai": "^4.2.0",
     "chai-almost": "^1.0.1",
+    "copy-webpack-plugin": "^7.0.0",
     "css-loader": "^5.0.1",
     "file-loader": "^6.2.0",
     "mocha": "^8.1.3",

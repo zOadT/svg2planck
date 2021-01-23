@@ -1,6 +1,6 @@
 import * as planck from 'planck-js'
-import { svg2planck, Options, util, converters } from './dist'
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+import { svg2planck, util, converters } from './dist'
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 
 const editorContainer = document.getElementById('editor')!
 const editor = monaco.editor.create(editorContainer, {
@@ -14,6 +14,8 @@ window.addEventListener('resize', function updateLayout() {
 		height: editorContainer.clientHeight,
 	})
 })
+
+const iframe = document.getElementById('view')! as HTMLIFrameElement
 
 function transformTree(node: any, world: planck.World, transform: planck.Transform) {
   if(util.isShape(node)) {
@@ -35,9 +37,6 @@ function transformTree(node: any, world: planck.World, transform: planck.Transfo
   return world
 }
 
-// const el = document.getElementById('drop_zone')!
-// el.addEventListener('dragover', dragOverHandler)
-// el.addEventListener('drop', dropHandler)
 document.getElementById('input')!.addEventListener('change', (e: any) => openSVG(e.target.files[0]))
 
 function openSVG(file: File | undefined) {
@@ -45,22 +44,14 @@ function openSVG(file: File | undefined) {
     return
   }
   var reader = new FileReader();
-  reader.onload = function (event) {
+  reader.onload = async function (event) {
     if(!event?.target?.result) {
       return
     }
     editor.setValue(<string>event.target.result)
-    buildWorld(<string>event.target.result)
+    iframe.contentWindow!.postMessage(await buildWorld(<string>event.target.result), '*')
   }
   reader.readAsBinaryString(file)
-}
-
-function dragOverHandler(ev: DragEvent) {
-  ev.preventDefault()
-}
-function dropHandler(ev: DragEvent) {
-  ev.preventDefault()
-  openSVG(ev.dataTransfer?.files[0])
 }
 
 async function buildWorld(svg: string) {
@@ -73,18 +64,11 @@ async function buildWorld(svg: string) {
   })
   const world = transformTree(rootNode, planck.World(), planck.Transform.identity());
 
-  const viewBox = rootNode.$.viewBox.match(/[\+\-]?\d+(?:\.\d+)?/g)?.map(parseFloat)
-  
-  // ok for a quick demo
-  ;(<any>window).planck.testbed('svg2planck', (testbed: any) => {
-    testbed.scaleY=1
+  let viewBox = rootNode.$.viewBox.match(/[\+\-]?\d+(?:\.\d+)?/g)?.map(parseFloat)
 
-    if(viewBox && viewBox.length === 4) {
-      testbed.x = (viewBox[0] + viewBox[2] / 2) * meterPerPixelRatio
-      testbed.y = (viewBox[1] + viewBox[3] / 2) * meterPerPixelRatio
-      testbed.width = viewBox[2] * meterPerPixelRatio
-      testbed.heidth = viewBox[3] * meterPerPixelRatio
-    }
-    return world
-  })
+  return {
+    viewBox,
+    meterPerPixelRatio,
+    worldJson: (planck as any).Serializer.toJson(world)
+  }
 }

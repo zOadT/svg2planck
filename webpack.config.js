@@ -1,4 +1,5 @@
 var MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
+var CopyPlugin = require('copy-webpack-plugin');
 var path = require('path');
 
 module.exports = (env, argv) => ({
@@ -25,6 +26,14 @@ module.exports = (env, argv) => ({
     plugins: [
         new MonacoWebpackPlugin({
             languages: ['xml']
+        }),
+        new CopyPlugin({
+            patterns: [
+                {
+                    from: './node_modules/planck-js/dist/planck-with-testbed.min.*',
+                    to: '[name].[ext]',
+                }
+            ]
         })
     ],
     resolve: {
