@@ -1,23 +1,47 @@
 var MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 var CopyPlugin = require('copy-webpack-plugin');
 var path = require('path');
+var sveltePreprocess = require('svelte-preprocess');
 
 module.exports = (env, argv) => ({
-    entry: "./page.ts",
+    entry: {
+        'build/bundle': ['./pages/main.ts']
+    },
     output: {
-        path: path.resolve(__dirname, "pages"),
-        filename: "bundle.js",
+        path: path.resolve(__dirname, "public"),
+        filename: '[name].js',
+        chunkFilename: '[name].[id].js'
     },
     devtool: "source-map",
     resolve: {
-        extensions: [".ts", ".js"],
-        modules: [
-            path.resolve('./src'),
-            path.resolve('./node_modules'),
-        ]
+        alias: {
+            svelte: path.dirname(require.resolve('svelte/package.json'))
+        },
+        extensions: ['.mjs', '.js', '.ts', '.svelte'],
+        mainFields: ['svelte', 'browser', 'module', 'main'],
+        // modules: [
+        //     path.resolve('./src'),
+        //     path.resolve('./node_modules'),
+        // ]
     },
     module: {
         rules: [
+            {
+                test: /\.svelte$/,
+                use: {
+					loader: 'svelte-loader',
+					options: {
+						preprocess: sveltePreprocess()
+					}
+				}
+            },
+            {
+                // required to prevent errors from Svelte on Webpack 5+
+                test: /node_modules\/svelte\/.*\.mjs$/,
+                resolve: {
+                    fullySpecified: false
+                }
+            },
             { test: /\.ts$/, use: 'ts-loader' },
             { test: /\.css$/, use: ['style-loader', 'css-loader'] },
             { test: /\.ttf$/, use: ['file-loader'] }

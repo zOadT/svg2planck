@@ -1,10 +1,5 @@
 {
-    "compilerOptions": {
-        "declaration": true,
-        "strict": true,
-        "outDir": "dist",
-        "sourceMap": true
-    },
-    "include": ["src/**/*"],
-    "exclude": ["node_modules"]
+    "extends": "@tsconfig/svelte/tsconfig.json",
+    "include": ["pages/**/*", "src/node_modules/**/*"],
+    "exclude": ["node_modules/*", "__sapper__/*", "static/*"]
 }
