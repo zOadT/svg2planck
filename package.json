@@ -14,6 +14,7 @@
   "dependencies": {
     "monaco-editor": "^0.21.2",
     "planck-js": "^0.3.22",
+    "stage-js": "^0.9.4",
     "xml2js": "^0.4.23"
   },
   "devDependencies": {
