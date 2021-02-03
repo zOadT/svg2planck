@@ -6,8 +6,10 @@
 
 	let editorContainer: HTMLDivElement
 
+	let editor: monaco.editor.IStandaloneCodeEditor
+
 	onMount(() => {
-		const editor = monaco.editor.create(editorContainer, {
+		editor = monaco.editor.create(editorContainer, {
 			value: $svgContent,
 			language: 'xml',
 			theme: 'vs-dark',
@@ -17,7 +19,18 @@
 			editor.setValue(value)
 		})
 	})
+
+	function resizeEditor() {
+		if(editor) {
+			editor.layout({
+				width: editorContainer.clientWidth,
+				height: editorContainer.clientHeight,
+			})
+		}
+	}
 </script>
+
+<svelte:window on:resize={resizeEditor}/>
 
 <div id="editor" bind:this={editorContainer}></div>
 
