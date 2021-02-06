@@ -2,21 +2,25 @@
 	import { onMount } from 'svelte'
 	import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 
-	import { svgContent } from './stores'
+	export let value = ''
 
 	let editorContainer: HTMLDivElement
-
 	let editor: monaco.editor.IStandaloneCodeEditor
+
+	$: if(editor) {
+		if(value !== editor.getModel().getValue()) {
+			editor.setValue(value)
+		}
+	}
 
 	onMount(() => {
 		editor = monaco.editor.create(editorContainer, {
-			value: $svgContent,
+			value,
 			language: 'xml',
 			theme: 'vs-dark',
-			readOnly: true,
 		})
-		svgContent.subscribe(value => {
-			editor.setValue(value)
+		editor.onDidChangeModelContent(() => {
+			value = editor.getModel().getValue()
 		})
 	})
 
