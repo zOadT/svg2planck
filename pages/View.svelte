@@ -3,7 +3,7 @@
     import { svgContent, scale } from './stores'
     import { World, Transform } from 'planck-js'
     import { testbed } from 'planck-js/testbed'
-    import { svg2planck, util, converters } from '../dist'
+    import { svg2planck, util, converters } from '../src'
 
     function transformTree(node, world, transform) {
         if(util.isShape(node)) {

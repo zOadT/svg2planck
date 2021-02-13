@@ -21,7 +21,12 @@ module.exports = (env, argv) => ({
         // modules: [
         //     path.resolve('./src'),
         //     path.resolve('./node_modules'),
-        // ]
+        // ],
+        fallback: {
+            buffer: require.resolve("buffer/"),
+            timers: require.resolve("timers-browserify"),
+            stream: require.resolve("stream-browserify")
+        }
     },
     module: {
         rules: [
@@ -51,11 +56,4 @@ module.exports = (env, argv) => ({
             languages: ['xml']
         })
     ],
-    resolve: {
-        fallback: {
-            buffer: require.resolve("buffer/"),
-            timers: require.resolve("timers-browserify"),
-            stream: require.resolve("stream-browserify")
-        }
-    }
 })

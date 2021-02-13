@@ -1,4 +1,7 @@
 {
     "extends": "@tsconfig/svelte/tsconfig.json",
+    "compilerOptions": {
+        "importsNotUsedAsValues": "remove"
+    },
     "exclude": ["__sapper__/*", "static/*"]
 }
