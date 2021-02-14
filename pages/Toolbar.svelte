@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { svgContent, scale } from './stores'
+    import { svgContent, scale, error } from './stores'
 
     function handleFileChange(e) {
         openSVG(e.target.files[0])
@@ -30,6 +30,9 @@
         step=0.01
         bind:value={$scale}
     >
+    <span style="color: red">
+        { $error ?? '' }
+    </span>
 </div>
 
 <style>
