@@ -1,7 +1,6 @@
 <script lang="ts">
     import { World } from 'planck-js'
     import { testbed } from 'planck-js/testbed'
-    import { world } from './stores'
 
     const currentWorld = World()
     let view
@@ -11,7 +10,11 @@
         return currentWorld
     })
 
-    world.subscribe(({viewBox, meterPerPixelRatio, world}) => {
+    export let world
+
+    $: {
+        const { viewBox, meterPerPixelRatio, world: nextWorld } = world
+
         if(viewBox && viewBox.length === 4) {
             view.x = (viewBox[0] + viewBox[2] / 2) * meterPerPixelRatio
             view.y = (viewBox[1] + viewBox[3] / 2) * meterPerPixelRatio
@@ -22,8 +25,8 @@
         for(let b = currentWorld.getBodyList(); b; b = b.getNext()) {
             currentWorld.destroyBody(b)
         }
-        Object.assign(currentWorld, world)
-    })
+        Object.assign(currentWorld, nextWorld)
+    }
 </script>
 
 <canvas id="stage"></canvas>

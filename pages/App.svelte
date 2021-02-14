@@ -3,9 +3,9 @@
 	import Editor from './Editor.svelte'
 	import View from './View.svelte'
 
-	import { svgContent } from './stores'
+	import { svgContent, world } from './stores'
 </script>
 
 <Toolbar/>
 <Editor bind:value={$svgContent}/>
-<View/>
+<View world={$world}/>
