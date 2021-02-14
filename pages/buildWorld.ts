@@ -26,9 +26,14 @@ export default async function buildWorld(svg: string, meterPerPixelRatio) {
         meterPerPixelRatio,
         scaleY: 1
     })
+
+    if(rootNode['#name'].toLowerCase() !== 'svg') {
+        throw new Error('Root element is no svg element')
+    }
+
     const world = transformTree(rootNode, World(), Transform.identity());
 
-    let viewBox = rootNode.$.viewBox.match(/[\+\-]?\d+(?:\.\d+)?/g)?.map(parseFloat)
+    let viewBox = rootNode.$?.viewBox?.match(/[\+\-]?\d+(?:\.\d+)?/g)?.map(parseFloat)
 
     return {
         viewBox,
