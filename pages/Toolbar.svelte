@@ -1,5 +1,6 @@
 <script lang="ts">
-    import { svgContent, scale, error } from './stores'
+    import { svgContent, scale, error, world } from './stores'
+    import * as planck from 'planck-js'
 
     function handleFileChange(e) {
         openSVG(e.target.files[0])
@@ -17,6 +18,10 @@
         }
         reader.readAsBinaryString(file)
     }
+
+    function exportWorld() {
+        window.parent.postMessage((<any>planck).Serializer.toJson($world.world), '*')
+    }
 </script>
 
 <div id="toolbar">
@@ -30,9 +35,17 @@
         step=0.01
         bind:value={$scale}
     >
-    <span style="color: red">
-        { $error ?? '' }
-    </span>
+    {#if $error !== null}
+        <span style="color: red">
+            { $error ?? '' }
+        </span>
+    {:else if window !== window.parent}
+        <input
+            type="button"
+            value="export"
+            on:click={exportWorld}
+        >
+    {/if}
 </div>
 
 <style>
