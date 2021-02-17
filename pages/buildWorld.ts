@@ -1,5 +1,6 @@
 import { World, Transform } from 'planck-js'
 import { svg2planck, util, converters } from '../src'
+import * as planck from 'planck-js'
 
 function transformTree(node, world, transform) {
     if(util.isShape(node)) {
@@ -21,7 +22,7 @@ function transformTree(node, world, transform) {
     return world
 }
 
-export default async function buildWorld(svg: string, meterPerPixelRatio) {
+async function buildWorld(svg: string, meterPerPixelRatio) {
     const rootNode = await svg2planck(svg, {
         meterPerPixelRatio,
         scaleY: 1
@@ -40,4 +41,41 @@ export default async function buildWorld(svg: string, meterPerPixelRatio) {
         meterPerPixelRatio,
         world
     }
+}
+
+const ctx: Worker = self as any;
+
+let input = null as { svgContent: string, scale: number }
+
+ctx.addEventListener('message', ({ data }) => {
+    input = data
+    start()
+})
+
+let running = false
+async function start() {
+    if(running) return
+
+    running = true
+    while(input) {
+        const { svgContent, scale } = input
+        input = null
+
+        try {
+            const world = await buildWorld(svgContent, scale)
+            ctx.postMessage({
+                world: {
+                    ...world,
+                    world: (<any>planck).Serializer.toJson(world.world)
+                },
+                error: null
+            })
+        } catch(error) {
+            ctx.postMessage({
+                world: null,
+                error
+            })
+        }
+    }
+    running = false
 }

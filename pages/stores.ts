@@ -1,40 +1,44 @@
-import { writable, derived } from 'svelte/store'
+import { writable, derived, readable } from 'svelte/store'
 import { World } from 'planck-js'
-import buildWorld from './buildWorld'
+import * as planck from 'planck-js'
+import Worker from 'worker-loader!./buildWorld'
 
 export const svgContent = writable('<placeholder from store />')
 
 export const scale = writable(0.1)
 
-const intermediate = derived([svgContent, scale], ([$svgContent, $scale], set) => {
-    buildWorld($svgContent, $scale).then(world => {
-        set({
-            world,
-            error: null,
-        })
-    }).catch(error => {
-        set({
-            world: null,
-            error
-        })
-    })
-}, {
-    world: {
-        viewBox: [],
-        meterPerPixelRatio: 0.1,
-        world: World(),
-    },
-    error: null
-})
+let worker = new Worker()
 
-export const world = derived(intermediate, ($intermediate, set) => {
-    if($intermediate.error === null) {
-        set($intermediate.world)
+derived([svgContent, scale], ([$svgContent, $scale]) => ({
+    svgContent: $svgContent,
+    scale: $scale
+})).subscribe(e => worker.postMessage(e))
+
+export const world = readable(World(), set => {
+
+    function updateValue({ data }) {
+        if(data.error === null) {
+            set({
+                ...data.world,
+                world: (<any>planck).Serializer.fromJson(data.world.world)
+            })
+        }
     }
-}, {
-    viewBox: [],
-    meterPerPixelRatio: 0.1,
-    world: World(),
+
+    worker.addEventListener('message', updateValue)
+    return () => {
+        worker.removeEventListener('message', updateValue)
+    }
 })
 
-export const error = derived(intermediate, $intermediate => $intermediate.error)
+export const error = readable(null, set => {
+
+    function updateValue({ data }) {
+        set(data.error)
+    }
+
+    worker.addEventListener('message', updateValue)
+    return () => {
+        worker.removeEventListener('message', updateValue)
+    }
+})
