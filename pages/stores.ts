@@ -3,7 +3,7 @@ import { World } from 'planck-js'
 import * as planck from 'planck-js'
 import Worker from 'worker-loader!./buildWorld'
 
-export const svgContent = writable('<placeholder from store />')
+export const svgContent = writable(require('./example.svg'))
 
 export const scale = writable(0.1)
 

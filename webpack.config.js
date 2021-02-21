@@ -48,7 +48,8 @@ module.exports = (env, argv) => ({
             },
             { test: /\.ts$/, use: 'ts-loader' },
             { test: /\.css$/, use: ['style-loader', 'css-loader'] },
-            { test: /\.ttf$/, use: ['file-loader'] }
+            { test: /\.ttf$/, use: ['file-loader'] },
+            { test: /\.svg/, type: 'asset/source' }
         ]
     },
     plugins: [

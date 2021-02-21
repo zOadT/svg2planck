@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 200">
+  <path d="M 380,0
+           q -20,130 -150,150
+           t -140,70
+           h -120"/>
+
+  <circle cx="340" cy="-30" r="30" />
+  <!-- <ellipse cx="350" cy="-30" rx="20" ry="40" /> -->
+
+  <g transform="translate(0, 140)">
+    <polygon points="0,0 40,0 30,40 10,40"/>
+    <rect x="10" y="40" width="20" height="40"/>
+  </g>
+</svg>
